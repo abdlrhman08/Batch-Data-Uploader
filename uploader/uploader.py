@@ -2,7 +2,9 @@ import click
 import os
 import pandas as pd
 
-from db import db
+from .db import db
+from .models import OWAccount
+from .utils import info_text
 
 from dotenv import load_dotenv
 
@@ -25,19 +27,15 @@ def upload(ctx: click.Context, filepath: str):
     '''Used to upload the accounts in the excel sheet to the database'''
     accounts_data = pd.read_excel(filepath)
 
-    #Get a connection to the database
+    #Get a connection to the database and upload
     ctx.obj.start_conn()
+    uploaded_accs = ctx.obj.bulk_upload(accounts_data)
 
-    ctx.obj.upload_acc(
-        type=0,
-        email=accounts_data["email"][0],
-        email_password=accounts_data["password"][0],
-        password=accounts_data["password"][0]
-    )
-
-    print("Uploaded")
-
-
+    #Generate account info
+    acc : OWAccount
+    for acc in uploaded_accs:
+        with open(f"{acc.id}.txt", "w") as info_file:
+            info_file.write(info_text(acc))
 
 if __name__ == "__main__":
     cli()
