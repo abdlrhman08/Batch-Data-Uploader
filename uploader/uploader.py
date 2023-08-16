@@ -22,8 +22,9 @@ def cli(ctx: click.Context):
 
 @cli.command()
 @click.argument("filepath")
+@click.option("--gen", type=str)
 @click.pass_context
-def upload(ctx: click.Context, filepath: str):
+def upload(ctx: click.Context, filepath: str, gen: str):
     '''Used to upload the accounts in the excel sheet to the database'''
     accounts_data = pd.read_excel(filepath)
 
@@ -31,10 +32,19 @@ def upload(ctx: click.Context, filepath: str):
     ctx.obj.start_conn()
     uploaded_accs = ctx.obj.bulk_upload(accounts_data)
 
+    if gen is None:
+        return
+
     #Generate account info
     acc : OWAccount
+    filepath = f"{gen}/"
+
+    if gen != "." or gen.endswith("/"):
+        filepath = gen
+        os.makedirs(os.path.dirname(gen), exist_ok=True)
+
     for acc in uploaded_accs:
-        with open(f"{acc.id}.txt", "w") as info_file:
+        with open(f"{filepath}{acc.id}.txt", "w") as info_file:
             info_file.write(info_text(acc))
 
 if __name__ == "__main__":
