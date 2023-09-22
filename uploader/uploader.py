@@ -40,7 +40,9 @@ def upload(ctx: click.Context, filepath: str, gen: str):
 
     #Write the account info
     for acc in uploaded_accs:
-        open(f"{filepath}{acc.id}.txt", "w").write(info_text(acc))
-
+        try:
+            open(f"{filepath}{acc.id}.txt", "w").write(info_text(acc))
+        except IOError:
+            print(IOError.strerror)
 if __name__ == "__main__":
     cli()
