@@ -36,13 +36,9 @@ def upload(ctx: click.Context, filepath: str, gen: str):
         return
 
     #Generate account info
-    acc : OWAccount
-    filepath = f"{gen}/"
+    filepath = gen if gen and not gen.endswith("/") else gen.rstrip("/") + "/"
 
-    if gen != "." or gen.endswith("/"):
-        filepath = gen
-        os.makedirs(os.path.dirname(gen), exist_ok=True)
-
+    #Write the account info
     for acc in uploaded_accs:
         with open(f"{filepath}{acc.id}.txt", "w") as info_file:
             info_file.write(info_text(acc))

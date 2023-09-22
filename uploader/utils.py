@@ -1,8 +1,8 @@
 from .models import OWAccount
 
 def info_text(account: OWAccount):
-    type: str
-    name = account.name.split()
+
+    first_name, last_name = account.name.split()
 
     if (account.type == 0):
         type = "50 Wins"
@@ -23,8 +23,8 @@ Country: Latvia
 Phone: {account.phonenum}
 Birthdate: {account.birthdate}
 
-First Name: {name[0]}
-Last Name: {name[1]}
+First Name: {first_name}
+Last Name: {last_name}
 
 SafeUM User: {account.safe_um_user}
 SafeUM Pass: {account.safe_um_pass}
